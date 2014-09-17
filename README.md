@@ -16,7 +16,7 @@ Get it via [composer](http://getcomposer.org/) by adding the package to your `co
 ```json
 {
   "require": {
-    "crazyfd/yii2-qiniu": "*"
+    "crazyfd/yii2-qiniu": "dev-master"
   }
 }
 ```
