@@ -1,0 +1,21 @@
+{
+    "name": "crazyfd/yii2-qiniu",
+    "description": "yii2上传到七牛云存储",
+	"keywords": ["yii", "qiniu", "upload"],
+	"type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "crazyfd",
+            "email": "crazyfd@qq.com"
+        }
+    ],
+	
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+	"autoload": {
+		"psr-0": { "crazyfd\\qiniu\\": "" }
+	},
+	"target-dir": "crazyfd/qiniu"
+}
