@@ -15,7 +15,6 @@
         "yiisoft/yii2": "*"
     },
 	"autoload": {
-		"psr-0": { "crazyfd\\qiniu\\": "" }
-	},
-	"target-dir": "crazyfd/qiniu"
+		"psr-4": { "crazyfd\\qiniu\\": "" }
+	}
 }
