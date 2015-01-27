@@ -53,7 +53,11 @@ class Qiniu
 
         $uploadToken = $this->uploadToken(array('scope' => $bucket));
         $data = [];
-        $data['file'] = new \CURLFile($filePath);
+        if (class_exists('\CURLFile')) {
+			$data['file'] = new \CURLFile($filePath);
+		} else {
+			$data['file'] = '@' .$filePath;
+		}
         $data['token'] = $uploadToken;
         if ($key) {
             $data['key'] = $key;
