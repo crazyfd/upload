@@ -286,7 +286,8 @@ class Qiniu
      */
     public function getLink($key = '')
     {
-        $url = "http://{$this->domain}/{$key}";
+//         $url = "http://{$this->domain}/{$key}";
+    	$url = "{$this->domain}{$key}";
         return $url;
     }
 
