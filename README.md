@@ -28,7 +28,11 @@ Usage
 -----
 
 ```php
-<?php 
+<?php
+$ak = 'sss';
+$sk = 'sss';
+$domain = 'http://demo.domain.com/';
+$bucket = 'demo';
 use crazyfd\qiniu\Qiniu;
 $qiniu = new Qiniu($ak, $sk,$domain, $bucket);
 $key = time();
