@@ -63,7 +63,7 @@ class Qiniu
             $data['key'] = $key;
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::UP_HOST);
+        curl_setopt($ch, CURLOPT_URL, $this->domain);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
