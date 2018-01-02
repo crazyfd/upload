@@ -1,27 +1,21 @@
-yii2-qiniu
+文件上传到七牛
 =================================
 * @author crazyfd <crazyfd@qq.com>
 * @version 1.0
 
-file upload for Yii Framework 2
+file upload for qiniu
 
-php > 5.5 
-
-How to install?
-To use this extension, you may insert the following code:
---------------------------------
-
-Get it via [composer](http://getcomposer.org/) by adding the package to your `composer.json`:
+最近会调整版本
 
 ```json
 {
   "require": {
-    "crazyfd/yii2-qiniu": "dev-master"
+    "crazyfd/qiniu": "*"
   }
 }
 ```
 ```php
-php composer.phar update
+composer install
 ```
 
 Usage
@@ -33,8 +27,9 @@ $ak = 'sss';
 $sk = 'sss';
 $domain = 'http://demo.domain.com/';
 $bucket = 'demo';
+$zone = 'south_china';
 use crazyfd\qiniu\Qiniu;
-$qiniu = new Qiniu($ak, $sk,$domain, $bucket);
+$qiniu = new Qiniu($ak, $sk,$domain, $bucket,$zone);
 $key = time();
 $qiniu->uploadFile($_FILES['tmp_name'],$key);
 $url = $qiniu->getLink($key);

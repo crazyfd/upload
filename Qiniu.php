@@ -1,7 +1,6 @@
 <?php
 
 namespace crazyfd\qiniu;
-use yii\web\HttpException;
 /**
  * upload file to qiniu.
  *
@@ -19,21 +18,36 @@ use yii\web\HttpException;
 class Qiniu
 {
 
-    const UP_HOST = 'http://up.qiniu.com';
-    const RS_HOST = 'http://rs.qbox.me';
-    const RSF_HOST = 'http://rsf.qbox.me';
+    public $up_host = 'http://up.qiniu.com';   //默认上传的地址
+    public $rs_host = 'http://rs.qbox.me';    //资源管理域名
+    public $rsf_host = 'http://rsf.qbox.me';   //资源列举域名
 
     protected $accessKey;
     protected $secretKey;
     protected $bucket;
     protected $domain;
 
-    function __construct($accessKey, $secretKey, $domain, $bucket = '')
+
+    /**
+     * Qiniu constructor.
+     * @param $accessKey
+     * @param $secretKey
+     * @param $domain
+     * @param string $bucket
+     * @param string $zone 默认华南机房
+     */
+    function __construct($accessKey, $secretKey, $domain, $bucket, $zone = 'south_china')
     {
         $this->accessKey = $accessKey;
         $this->secretKey = $secretKey;
         $this->domain = $domain;
         $this->bucket = $bucket;
+
+        $config = $this->zoneConfig($zone);
+
+        $this->up_host = $config['up'][0];  //读取第一个可用线路
+
+
     }
 
     /**
@@ -41,29 +55,29 @@ class Qiniu
      * @param $filePath
      * @param null $key
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
 
     public function uploadFile($filePath, $key = null, $bucket = '')
     {
-        if(!file_exists($filePath)){
-            throw new HttpException(400, "上传的文件不存在");
+        if (!file_exists($filePath)) {
+            throw new \Exception(400, "上传的文件不存在");
         }
         $bucket = $bucket ? $bucket : $this->bucket;
 
         $uploadToken = $this->uploadToken(array('scope' => $bucket));
         $data = [];
         if (class_exists('\CURLFile')) {
-			$data['file'] = new \CURLFile($filePath);
-		} else {
-			$data['file'] = '@' .$filePath;
-		}
+            $data['file'] = new \CURLFile($filePath);
+        } else {
+            $data['file'] = '@' . $filePath;
+        }
         $data['token'] = $uploadToken;
         if ($key) {
             $data['key'] = $key;
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::UP_HOST);
+        curl_setopt($ch, CURLOPT_URL, self::$up_host);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -74,7 +88,7 @@ class Qiniu
         if ($status == 200) {
             return $result;
         } else {
-            throw new HttpException($status, $result['error']);
+            throw new \Exception($status, $result['error']);
         }
     }
 
@@ -83,7 +97,7 @@ class Qiniu
      * @param $url
      * @param null $key
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
     public function uploadByUrl($url, $key = null, $bucket = '')
     {
@@ -115,7 +129,7 @@ class Qiniu
      * @param $bucket2
      * @param bool $key2
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
     public function move($key, $bucket2, $key2 = false, $bucket = '')
     {
@@ -136,7 +150,7 @@ class Qiniu
      * @param $bucket2
      * @param bool $key2
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
     public function copy($key, $bucket2, $key2 = false, $bucket = '')
     {
@@ -155,7 +169,7 @@ class Qiniu
      * 删除指定资源  http://developer.qiniu.com/docs/v6/api/reference/rs/delete.html
      * @param $key
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
     public function delete($key, $bucket = '')
     {
@@ -168,9 +182,9 @@ class Qiniu
 
     /**
      * 批量操作（batch） http://developer.qiniu.com/docs/v6/api/reference/rs/batch.html
-     * @param $operator   [stat|move|copy|delete]
+     * @param $operator [stat|move|copy|delete]
      * @param $files
-     * @throws HttpException
+     * @throws \Exception
      */
     public function batch($operator, $files)
     {
@@ -194,26 +208,25 @@ class Qiniu
      * @param string $prefix
      * @param string $marker
      * @param string $bucket
-     * @throws HttpException
+     * @throws \Exception
      */
     public function listFiles($limit = '', $prefix = '', $marker = '', $bucket = '')
     {
         $bucket = $bucket ? $bucket : $this->bucket;
         $params = array_filter(compact('bucket', 'limit', 'prefix', 'marker'));
-        $url = self::RSF_HOST . '/list?' . http_build_query($params);
+        $url = self::$rsf_host . '/list?' . http_build_query($params);
         return $this->fileHandle($url);
     }
 
     protected function fileHandle($url, $data = array())
     {
-        if (strpos($url, 'http://') !== 0){
-            $url = self::RS_HOST . $url;
+        if (strpos($url, 'http://') !== 0) {
+            $url = self::$rs_host . $url;
         }
 
-        if (is_array($data)){
+        if (is_array($data)) {
             $accessToken = $this->accessToken($url);
-        }
-        else{
+        } else {
             $accessToken = $this->accessToken($url, $data);
         }
 
@@ -234,7 +247,7 @@ class Qiniu
         if ($status == 200) {
             return $result;
         } else {
-            throw new HttpException($status ,$result['error']);
+            throw new \Exception($status, $result['error']);
         }
     }
 
@@ -286,8 +299,7 @@ class Qiniu
      */
     public function getLink($key = '')
     {
-//         $url = "http://{$this->domain}/{$key}";
-    	$url = rtrim($this->domain,'/')."/{$key}";
+        $url = rtrim($this->domain, '/') . "/{$key}";
         return $url;
     }
 
@@ -304,5 +316,35 @@ class Qiniu
 
     public function __destruct()
     {
+    }
+
+    protected function zoneConfig($key = null)
+    {
+        $arr = [
+            //华东
+            'east_china' => [
+                'up' => array("up.qiniup.com", 'up-nb.qiniup.com', 'up-xs.qiniup.com'),
+            ],
+            //华北
+            'north_china' => [
+                'up' => array('up-z1.qiniup.com'),
+            ],
+            //华南机房
+            'south_china' => [
+                'up' => array('up-z2.qiniup.com', 'up-gz.qiniup.com', 'up-fs.qiniup.com'),
+            ],
+            //北美机房
+            'north_america' => [
+                'up' => array('up-na0.qiniup.com'),
+            ]
+        ];
+        if ($key !== null) {
+            if (isset($arr[$key])) {
+                return $arr[$key];
+            } else {
+                throw new \Exception('区域不存在');
+            }
+        }
+        return $arr;
     }
 }
