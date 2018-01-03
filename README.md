@@ -10,7 +10,7 @@ file upload for qiniu
 ```json
 {
   "require": {
-    "crazyfd/upload": "*"
+    "crazyfd/yii2-qiniu": "*"
   }
 }
 ```
