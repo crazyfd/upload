@@ -31,6 +31,8 @@ $zone = 'south_china';
 use crazyfd\qiniu\Qiniu;
 $qiniu = new Qiniu($ak, $sk,$domain, $bucket,$zone);
 $key = time();
+$key .= strtolower(strrchr($_FILES['name'], '.'));
+
 $qiniu->uploadFile($_FILES['tmp_name'],$key);
 $url = $qiniu->getLink($key);
 ```
