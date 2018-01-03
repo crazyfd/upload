@@ -77,7 +77,7 @@ class Qiniu
             $data['key'] = $key;
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::$up_host);
+        curl_setopt($ch, CURLOPT_URL, $this->up_host);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -214,14 +214,14 @@ class Qiniu
     {
         $bucket = $bucket ? $bucket : $this->bucket;
         $params = array_filter(compact('bucket', 'limit', 'prefix', 'marker'));
-        $url = self::$rsf_host . '/list?' . http_build_query($params);
+        $url = $this->rsf_host . '/list?' . http_build_query($params);
         return $this->fileHandle($url);
     }
 
     protected function fileHandle($url, $data = array())
     {
         if (strpos($url, 'http://') !== 0) {
-            $url = self::$rs_host . $url;
+            $url = $this->rs_host . $url;
         }
 
         if (is_array($data)) {
