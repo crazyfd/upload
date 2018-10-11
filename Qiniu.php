@@ -88,7 +88,7 @@ class Qiniu
         if ($status == 200) {
             return $result;
         } else {
-            throw new \Exception($status, $result['error']);
+            throw new \Exception($result['error'], $status);
         }
     }
 
@@ -323,7 +323,7 @@ class Qiniu
         $arr = [
             //华东
             'east_china' => [
-                'up' => array("up.qiniup.com", 'up-nb.qiniup.com', 'up-xs.qiniup.com'),
+                'up' => array('up.qiniup.com'),
             ],
             //华北
             'north_china' => [
@@ -331,11 +331,15 @@ class Qiniu
             ],
             //华南机房
             'south_china' => [
-                'up' => array('up-z2.qiniup.com', 'up-gz.qiniup.com', 'up-fs.qiniup.com'),
+                'up' => array('up-z2.qiniup.com'),
             ],
             //北美机房
             'north_america' => [
                 'up' => array('up-na0.qiniup.com'),
+            ],
+            //东南亚
+            'sea' => [
+                'up' => array('up-as0.qiniup.com'),
             ]
         ];
         if ($key !== null) {
