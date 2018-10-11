@@ -27,7 +27,7 @@ class Qiniu
     protected $bucket;
     protected $domain;
 
-    protected $zone = [
+    protected static $zone = [
         //华东
         'east_china' => [
             'up' => array('up.qiniup.com'),
@@ -352,20 +352,20 @@ class Qiniu
     protected function zoneConfig($key = null)
     {
         if ($key !== null) {
-            if (isset($this->zone[$key])) {
-                return $this->zone[$key];
+            if (isset(self::$zone[$key])) {
+                return self::$zone[$key];
             } else {
                 throw new \Exception('区域不存在');
             }
         }
-        return $this->zone;
+        return self::$zone;
     }
 
     /**
      * 获取区域
      * @return array
      */
-    public function getZone(){
-        return $this->zone;
+    public static function getZone(){
+        return self::$zone;
     }
 }
