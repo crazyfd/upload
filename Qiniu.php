@@ -27,7 +27,38 @@ class Qiniu
     protected $bucket;
     protected $domain;
 
-
+    protected static $zone = [
+        //华东
+        'east_china' => [
+            'up' => array('up.qiniup.com'),
+            'label' => '华东',
+            'slug' => 'z0',
+        ],
+        //华北
+        'north_china' => [
+            'up' => array('up-z0.qiniup.com'),
+            'label' => '华北',
+            'slug' => 'z1',
+        ],
+        //华南机房
+        'south_china' => [
+            'up' => array('up-z2.qiniup.com'),
+            'label' => '华南',
+            'slug' => 'z2',
+        ],
+        //北美机房
+        'north_america' => [
+            'up' => array('up-na0.qiniup.com'),
+            'label' => '北美',
+            'slug' => 'na0',
+        ],
+        //东南亚
+        'sea' => [
+            'up' => array('up-as0.qiniup.com'),
+            'label' => '东南亚',
+            'slug' => 'as0',
+        ]
+    ];
     /**
      * Qiniu constructor.
      * @param $accessKey
@@ -88,7 +119,7 @@ class Qiniu
         if ($status == 200) {
             return $result;
         } else {
-            throw new \Exception($status, $result['error']);
+            throw new \Exception($result['error'], $status);
         }
     }
 
@@ -320,31 +351,21 @@ class Qiniu
 
     protected function zoneConfig($key = null)
     {
-        $arr = [
-            //华东
-            'east_china' => [
-                'up' => array("up.qiniup.com", 'up-nb.qiniup.com', 'up-xs.qiniup.com'),
-            ],
-            //华北
-            'north_china' => [
-                'up' => array('up-z1.qiniup.com'),
-            ],
-            //华南机房
-            'south_china' => [
-                'up' => array('up-z2.qiniup.com', 'up-gz.qiniup.com', 'up-fs.qiniup.com'),
-            ],
-            //北美机房
-            'north_america' => [
-                'up' => array('up-na0.qiniup.com'),
-            ]
-        ];
         if ($key !== null) {
-            if (isset($arr[$key])) {
-                return $arr[$key];
+            if (isset(self::$zone[$key])) {
+                return self::$zone[$key];
             } else {
                 throw new \Exception('区域不存在');
             }
         }
-        return $arr;
+        return self::$zone;
+    }
+
+    /**
+     * 获取区域
+     * @return array
+     */
+    public static function getZone(){
+        return self::$zone;
     }
 }
