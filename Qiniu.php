@@ -327,7 +327,7 @@ class Qiniu
             ],
             //华北
             'north_china' => [
-                'up' => array('up-z1.qiniup.com'),
+                'up' => array('up-z0.qiniup.com'),
             ],
             //华南机房
             'south_china' => [
