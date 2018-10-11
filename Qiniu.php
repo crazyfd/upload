@@ -27,7 +27,38 @@ class Qiniu
     protected $bucket;
     protected $domain;
 
-
+    protected $zone = [
+        //华东
+        'east_china' => [
+            'up' => array('up.qiniup.com'),
+            'label' => '华东',
+            'slug' => 'z0',
+        ],
+        //华北
+        'north_china' => [
+            'up' => array('up-z0.qiniup.com'),
+            'label' => '华北',
+            'slug' => 'z1',
+        ],
+        //华南机房
+        'south_china' => [
+            'up' => array('up-z2.qiniup.com'),
+            'label' => '华南',
+            'slug' => 'z2',
+        ],
+        //北美机房
+        'north_america' => [
+            'up' => array('up-na0.qiniup.com'),
+            'label' => '北美',
+            'slug' => 'na0',
+        ],
+        //东南亚
+        'sea' => [
+            'up' => array('up-as0.qiniup.com'),
+            'label' => '东南亚',
+            'slug' => 'as0',
+        ]
+    ];
     /**
      * Qiniu constructor.
      * @param $accessKey
@@ -320,35 +351,21 @@ class Qiniu
 
     protected function zoneConfig($key = null)
     {
-        $arr = [
-            //华东
-            'east_china' => [
-                'up' => array('up.qiniup.com'),
-            ],
-            //华北
-            'north_china' => [
-                'up' => array('up-z0.qiniup.com'),
-            ],
-            //华南机房
-            'south_china' => [
-                'up' => array('up-z2.qiniup.com'),
-            ],
-            //北美机房
-            'north_america' => [
-                'up' => array('up-na0.qiniup.com'),
-            ],
-            //东南亚
-            'sea' => [
-                'up' => array('up-as0.qiniup.com'),
-            ]
-        ];
         if ($key !== null) {
-            if (isset($arr[$key])) {
-                return $arr[$key];
+            if (isset($this->zone[$key])) {
+                return $this->zone[$key];
             } else {
                 throw new \Exception('区域不存在');
             }
         }
-        return $arr;
+        return $this->zone;
+    }
+
+    /**
+     * 获取区域
+     * @return array
+     */
+    public function getZone(){
+        return $this->zone;
     }
 }
