@@ -61,7 +61,7 @@ class Qiniu
     public function uploadFile($filePath, $key = null, $bucket = '')
     {
         if (!file_exists($filePath)) {
-            throw new \Exception(400, "上传的文件不存在");
+            throw new \Exception("上传的文件不存在",400);
         }
         $bucket = $bucket ? $bucket : $this->bucket;
 
@@ -88,7 +88,7 @@ class Qiniu
         if ($status == 200) {
             return $result;
         } else {
-            throw new \Exception($status, $result['error']);
+            throw new \Exception($result['error'],$status);
         }
     }
 
