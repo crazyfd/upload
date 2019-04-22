@@ -5,7 +5,13 @@
 
 file upload for qiniu
 
-最近会调整版本
+推荐使用 composer 安装：
+
+```shell
+composer require --prefer-dist crazyfd/yii2-qiniu
+```
+
+或者手动编辑 composer.json
 
 ```json
 {
@@ -14,6 +20,9 @@ file upload for qiniu
   }
 }
 ```
+
+然后执行安装命令：
+
 ```php
 composer install
 ```
